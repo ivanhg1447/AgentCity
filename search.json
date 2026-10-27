@@ -11,14 +11,14 @@
     "href": "posts/001-first-two-experiments.html",
     "title": "From one zone to a working city: the first two experiments",
     "section": "",
-    "text": "This is a draft. Nothing here is published yet."
+    "text": "No model managed a city in this post. Both experiments used fixed commands. That was deliberate. Before we judge any AI decision, the machinery must be trustworthy. A purchase must cost the right amount. A bad purchase must fail safely. Time must advance in a controlled way. A saved city must restore correctly.\nExperiment E001 tested one purchase. Experiment E002 tested a small settlement. Together they form one progression. First, trust a single action. Then, trust many actions working together."
   },
   {
     "objectID": "posts/001-first-two-experiments.html#what-these-experiments-test",
     "href": "posts/001-first-two-experiments.html#what-these-experiments-test",
     "title": "From one zone to a working city: the first two experiments",
-    "section": "What these experiments test",
-    "text": "What these experiments test\nNo model managed a city in this post. Both experiments used fixed commands. That was deliberate. Before we judge any AI decision, the machinery must be trustworthy. A purchase must cost the right amount. A bad purchase must fail safely. Time must advance in a controlled way. A saved city must restore correctly.\nExperiment E001 tested one purchase. Experiment E002 tested a small settlement. Together they form one progression. First, trust a single action. Then, trust many actions working together."
+    "section": "",
+    "text": "No model managed a city in this post. Both experiments used fixed commands. That was deliberate. Before we judge any AI decision, the machinery must be trustworthy. A purchase must cost the right amount. A bad purchase must fail safely. Time must advance in a controlled way. A saved city must restore correctly.\nExperiment E001 tested one purchase. Experiment E002 tested a small settlement. Together they form one progression. First, trust a single action. Then, trust many actions working together."
   },
   {
     "objectID": "posts/001-first-two-experiments.html#e001-make-one-purchase-trustworthy",
@@ -53,14 +53,14 @@
     "href": "posts/002-first-model-action.html",
     "title": "A legal move that did not repair the city",
     "section": "",
-    "text": "This is a draft. Nothing here is published yet."
+    "text": "Can one model request choose a useful repair? Can the test setup execute that exact command? Does power reach all eight existing zones within one simulated month?\nThis was the first time the model selected a game action. Everything before this used fixed commands. That distinction matters. E001 and E002 tested machinery. E003 tests a decision."
   },
   {
     "objectID": "posts/002-first-model-action.html#the-question",
     "href": "posts/002-first-model-action.html#the-question",
     "title": "A legal move that did not repair the city",
-    "section": "The question",
-    "text": "The question\nCan one model request choose a useful repair? Can the test setup execute that exact command? Does power reach all eight existing zones within one simulated month?\nThis was the first time the model selected a game action. Everything before this used fixed commands. That distinction matters. E001 and E002 tested machinery. E003 tests a decision."
+    "section": "",
+    "text": "Can one model request choose a useful repair? Can the test setup execute that exact command? Does power reach all eight existing zones within one simulated month?\nThis was the first time the model selected a game action. Everything before this used fixed commands. That distinction matters. E001 and E002 tested machinery. E003 tests a decision."
   },
   {
     "objectID": "posts/002-first-model-action.html#the-fixture",
@@ -123,7 +123,7 @@
     "href": "appendix.html",
     "title": "Technical appendix: experiments through E003",
     "section": "",
-    "text": "This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. All posts are drafts and unpublished. The E000 introduction will be written by the owner."
+    "text": "This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. The E000 introduction will be written by the owner."
   },
   {
     "objectID": "appendix.html#data-flow",
