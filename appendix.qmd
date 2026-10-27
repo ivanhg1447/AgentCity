@@ -1,5 +1,5 @@
 ---
-title: "Technical appendix: Babel through E003"
+title: "Technical appendix: experiments through E003"
 ---
 
 *This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. All posts are drafts and unpublished. The E000 introduction will be written by the owner.*
@@ -50,7 +50,7 @@ Timestamped launcher output preserves runner, launcher, and protocol records, pl
 
 ## Build and test commands
 
-Working directory for game installation and build: `C:\Babel\micropolisJS`. The install used a bundled package manager to supply pinned npm. Production build:
+Working directory for game installation and build: the local `micropolisJS` checkout. The install used a bundled package manager to supply pinned npm. Production build:
 
 ```powershell
 node .\node_modules\webpack-cli\bin\cli.js --mode production
@@ -59,10 +59,10 @@ node .\node_modules\webpack-cli\bin\cli.js --mode production
 Static server, using the bundled Python runtime:
 
 ```powershell
-& $babelPython -m http.server 5173 --bind 127.0.0.1 --directory C:\Babel\micropolisJS\dist
+& $pythonExe -m http.server 5173 --bind 127.0.0.1 --directory <path to the micropolisJS dist folder>
 ```
 
-From `C:\Babel`, the recorded experiment and test entry points are:
+From the project root, the recorded experiment and test entry points are:
 
 ```powershell
 node .\scripts\run-game-experiment.cjs
@@ -74,7 +74,7 @@ node .\scripts\run-llm-repair.cjs
 
 The final command defaults to local-only E003 preflight. It is not the paid live launcher. The completed live directory refuses another paid attempt. These commands are references. They were not rerun to assemble the writer handoff.
 
-The Node harness uses Webpack with Node target, resolves `.js` and `.ts` imports, uses the game's TypeScript loader and config, and writes a CommonJS bundle under `.cache/babel-build/`. The game's TypeScript config uses ES5 target, CommonJS module compilation, `allowJs`, and strict checks.
+The Node harness uses Webpack with Node target, resolves `.js` and `.ts` imports, uses the game's TypeScript loader and config, and writes a CommonJS bundle under a local `.cache` build directory. The game's TypeScript config uses ES5 target, CommonJS module compilation, `allowJs`, and strict checks.
 
 E001 and E002 test children have 30-second execution timeouts. E003 has 30 seconds for local preflight and 45 seconds for the live child, with its own 30-second HTTP deadline. Compilation sits outside those child execution timeouts.
 
@@ -189,6 +189,6 @@ This is a dated basis, checked October 25 and 26, 2026. Do not assume current pr
 
 ## Claims to keep, and claims to avoid
 
-Safe, with qualifications: the model API connection works; Babel places constructions with normal rules and costs on tested tools and sites; the repaired engine develops a scripted settlement in fixed small layouts; traffic works in the tested repaired paths; saved fields restored in E001; the first hosted model game command reached the game; that action was legal and executed correctly but failed to restore power; recorded project API spending was very small.
+Safe, with qualifications: the model API connection works; the test setup places constructions with normal rules and costs on tested tools and sites; the repaired engine develops a scripted settlement in fixed small layouts; traffic works in the tested repaired paths; saved fields restored in E001; the first hosted model game command reached the game; that action was legal and executed correctly but failed to restore power; recorded project API spending was very small.
 
 Do not claim: the LLM built or managed the E001/E002 cities; a balanced, profitable, self-sustaining AI city manager exists; E003 repaired power or succeeded on a later retry; the known scripted repair was the model's choice; all upstream tests pass; a single failed model choice proves a particular prompt, map, or model weakness; a game task validates real-company management; the videos are original live screen recordings.

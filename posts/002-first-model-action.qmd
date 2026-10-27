@@ -1,14 +1,14 @@
 ---
 title: "A legal move that did not repair the city"
 date: 2026-10-26
-categories: [babel, experiments]
+categories: [experiments]
 ---
 
 *This is a draft. Nothing here is published yet.*
 
 ## The question
 
-Can one model request choose a useful repair? Can Babel execute that exact command? Does power reach all eight existing zones within one simulated month?
+Can one model request choose a useful repair? Can the test setup execute that exact command? Does power reach all eight existing zones within one simulated month?
 
 This was the first time the model selected a game action. Everything before this used fixed commands. That distinction matters. E001 and E002 tested machinery. E003 tests a decision.
 
@@ -129,6 +129,6 @@ Several questions stay open, and the blog should not pretend otherwise.
 - Can we validate commercial growth, broader transport, long-term finance, and larger scenarios? Not yet.
 - What about a local model or cluster? No such model or hardware has been installed. That choice needs a concrete need and measurement first.
 
-The honest summary of Babel so far is short. The machinery works. The settlement develops under fixed commands. The first model decision was legal, exact, and wrong. That is progress, because now we can measure the next attempt against it.
+The honest summary of the project so far is short. The machinery works. The settlement develops under fixed commands. The first model decision was legal, exact, and wrong. That is progress, because now we can measure the next attempt against it.
 
 *Technical details for this post are in the [shared appendix](../appendix.qmd).*

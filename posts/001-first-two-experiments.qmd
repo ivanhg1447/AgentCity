@@ -1,7 +1,7 @@
 ---
-title: "From one zone to a working city: Babel's first two experiments"
+title: "From one zone to a working city: the first two experiments"
 date: 2026-10-26
-categories: [babel, experiments]
+categories: [experiments]
 ---
 
 *This is a draft. Nothing here is published yet.*
@@ -55,7 +55,7 @@ Two checks were added during diagnosis. The repaired suite passed 12 of 12. Do n
 
 ### Browser checks
 
-We also checked the game in a browser. A disposable city named "Babel E001" was used. A residential placement in the original build charged $101. After rebuilding with repairs, a fresh placement charged $102. Both charges fit one or two $1 clearing fees. The controlled clear-map test independently verified the $100 base cost.
+We also checked the game in a browser. A disposable test city was used. A residential placement in the original build charged $101. After rebuilding with repairs, a fresh placement charged $102. Both charges fit one or two $1 clearing fees. The controlled clear-map test independently verified the $100 base cost.
 
 The upstream test suite was also run. 160 of 162 upstream tests passed. Two bounds tests still fail. They expect zero width and height to trigger an assertion. Their source and tests were unchanged. The full upstream suite is not green. We do not claim otherwise.
 
