@@ -1,5 +1,5 @@
 ---
-title: "Haiwen Guan"
+title: "AgentCity"
 listing:
   contents: posts
   sort: "date desc"
@@ -7,8 +7,6 @@ listing:
   categories: true
 ---
 
-I am a postdoctoral researcher at Argonne National Laboratory working on scientific machine learning — neural operators, diffusion models, and climate and atmospheric modeling.
-
-This blog has two threads. One is a build log for an AI that plays city-building and business simulation games, documented in public, failures included. The other is research notes from the lab: methods, papers, and things I wish someone had written down.
+This blog has two threads. One is a build log for an AI that plays city-building and business simulation games, documented in public, failures included. The other is research notes: methods, papers, and things worth writing down.
 
 New posts appear when there is something worth saying, roughly once a week.

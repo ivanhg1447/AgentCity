@@ -3,8 +3,8 @@ project:
   output-dir: _site
 
 website:
-  title: "Haiwen Guan"
-  description: "Notes on scientific machine learning, climate modeling, and building an AI that plays city-building games."
+  title: "AgentCity"
+  description: "A build log for an AI that plays city-building and business simulation games, documented in public, failures included."
   navbar:
     left:
       - href: index.qmd
@@ -14,7 +14,7 @@ website:
       - href: appendix.qmd
         text: Appendix
   page-footer:
-    left: "© Haiwen Guan"
+    left: "© AgentCity"
     right: "Built with Quarto · Source on GitHub"
 
 format:
