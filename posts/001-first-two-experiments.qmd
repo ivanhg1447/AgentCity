@@ -4,8 +4,6 @@ date: 2026-10-26
 categories: [experiments]
 ---
 
-*This is a draft. Nothing here is published yet.*
-
 ## What these experiments test
 
 No model managed a city in this post. Both experiments used fixed commands. That was deliberate. Before we judge any AI decision, the machinery must be trustworthy. A purchase must cost the right amount. A bad purchase must fail safely. Time must advance in a controlled way. A saved city must restore correctly.

@@ -2,7 +2,7 @@
 title: "Technical appendix: experiments through E003"
 ---
 
-*This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. All posts are drafts and unpublished. The E000 introduction will be written by the owner.*
+*This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. The E000 introduction will be written by the owner.*
 
 ## Data flow
 
