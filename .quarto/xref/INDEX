@@ -1,0 +1,32 @@
+{
+  "posts/2026-10-26-hello.qmd": {
+    "2026-10-26-hello.html": "6ea79850"
+  },
+  "about.qmd": {
+    "about.html": "3b543c90"
+  },
+  "index.qmd": {
+    "index.html": "ffa4d2fc"
+  },
+  "posts/001-preparing-babel.qmd": {
+    "001-preparing-babel.html": "e7987a46"
+  },
+  "posts/002-first-two-experiments.qmd": {
+    "002-first-two-experiments.html": "fc9507f3"
+  },
+  "posts/003-first-model-action.qmd": {
+    "003-first-model-action.html": "a4ccad98"
+  },
+  "appendix.qmd": {
+    "appendix.html": "197cb618"
+  },
+  "posts/001-first-two-experiments.qmd": {
+    "001-first-two-experiments.html": "7380fb76"
+  },
+  "posts/002-first-model-action.qmd": {
+    "002-first-model-action.html": "37f6f67f"
+  },
+  "drafts/001-preparing-babel-reference.qmd": {
+    "001-preparing-babel-reference.html": "9e68f272"
+  }
+}

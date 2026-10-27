@@ -1,0 +1,67 @@
+---
+title: "Preparing Babel: a city simulator, a model, and the first API request"
+date: 2026-10-26
+categories: [babel, preparation]
+---
+
+*Post 1 of 3. This is a draft. Nothing here is published yet.*
+
+## What Babel is
+
+Babel is a project to build an AI player for city-building games. The goal is a city that survives and develops steadily. Cash alone is not enough. Growth, services, power, pollution, and investment all matter together.
+
+I also want to learn how to ask an AI the right questions. I believe that the best way to build a good AI is to ask the right questions. This project is about that skill as much as it is about the model. We must define what the AI sees, what it may do, and how we check the result.
+
+A note on voices, so the rest of this series stays honest. "I" means me, the owner of the project. "We" means me and the engineering assistant who wrote the test software. "The model" means only the hosted model, GPT-6 Luna. The model did not write the test software. It did not manage any city in this post.
+
+## Why a simple game
+
+A city game is a management problem with clear rules. Money, land, power, and traffic all interact. Failure is visible. Success is measurable. That makes it a good test bed.
+
+We first considered SimCity 2000. That is the famous original game. But we could not confirm which exact edition of SimCity 2000 would work with our tools. Different editions behave differently. That uncertainty would have cost weeks.
+
+So I chose Micropolis instead. Micropolis descends from the original SimCity. Its source code is open. We can read it, run it, and test it directly. That choice trades fame for speed. We reach real experiments sooner.
+
+Other games remain options for later. OpenTTD manages transport companies. OpenRCT2 manages theme parks. Stardew Valley manages a farm. Each has its own tools. None of them is used in this series.
+
+## The first lesson came from playing badly
+
+I tried the browser game by hand. I did not find manual play especially enjoyable. But it taught me something useful. My city kept showing high-pollution warnings. I asked what to do.
+
+The answer was not simple. "Pollution is high" is an observation. It is not a plan. A useful question needs more detail. Which area is polluted? What is the likely cause? What action can we afford? How will we check the result?
+
+Pollution in the game comes from several sources. Coal power adds pollution. Developed industry adds pollution. Traffic adds pollution. A citywide average can hide a local problem. One residential area can suffer while the city average looks fine.
+
+This shaped the whole project. A management question must name a location, a likely cause, an affordable action, and a check. Without those four parts, the AI cannot do useful work. It can only guess.
+
+## Getting the model connected
+
+I chose to start with an existing hosted model. Reinforcement learning comes later. Reinforcement learning means training a model through many repeated episodes. That needs reward design and high simulation speed. We are not ready for that yet.
+
+First, the model must answer at all. An API is a way for one program to send a request to another program over the internet. The hosted model offers an API. I created an API key and bought $10 of credit. Automatic recharge stayed off.
+
+Key handling mattered. The key was entered in a masked local window. The test tools passed it to a child process through memory only. They never wrote it into source code, reports, or screenshots. No permanent key storage was set up.
+
+The first request was deliberately tiny. It asked the model to reply with exactly one sentence: "Babel connection works." The request used the model GPT-6 Luna. It used no reasoning effort and a 64-token output limit. A token is a small chunk of text. The limit controls how much the model may write.
+
+The request succeeded. It returned HTTP 200. That code means the request worked. The reply was exactly the sentence we asked for. It took 2,470 milliseconds. It used 14 input tokens and 9 output tokens. The estimated cost was $0.0000059.
+
+That test proved one thing only. A working credential, account, and request combination existed at that time. It proved nothing about city management. Keep that distinction in mind. It matters for everything that follows.
+
+## Getting the game running
+
+We downloaded the upstream MicropolisJS source. A commit is a fixed snapshot of source code. Our base commit is `f13a1624d111d235e804bd80f48ba7c9f66a8e0f`. The local checkout is the game we test. The game itself does not provide a complete external AI interface. Our test drivers import engine modules and call their methods directly.
+
+Setup was not smooth. The first download failed because the restricted environment could not resolve GitHub. A retry with required permissions succeeded. Python commands pointed to different installations on the machine. One `python` lookup pointed to an unrelated program. The package manager npm was missing from the path at first.
+
+We solved this with bundled runtimes. Node.js 24.19.0 ran the JavaScript. A bundled package manager installed 633 packages from a lockfile. A lockfile pins exact package versions. The production build then succeeded. It had three bundle-size warnings. The main bundle was about 439 KiB. The game was served locally on port 5173.
+
+None of this is glamorous. All of it is necessary. You cannot test an AI player on a game you cannot run reliably.
+
+## Where this leaves us
+
+Preparation gave us three things. A chosen game with readable source. A working model connection with tiny cost. A local build that runs.
+
+What we did not have yet was trust. Could the software place a zone and charge the right price? Could it reject a bad purchase? Could it restore a saved city exactly? Those questions are the next post.
+
+*Technical details for this post are in the [shared appendix](../appendix.qmd). The next post covers the first two experiments: one trustworthy purchase, then a small developing settlement.*
