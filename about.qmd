@@ -1,0 +1,9 @@
+---
+title: "About"
+---
+
+I am Haiwen Guan, a computational scientist and postdoctoral researcher at Argonne National Laboratory. My work sits at the intersection of AI and scientific computing: neural operators, generative and diffusion models, and AI emulators for weather and climate.
+
+Current projects include LUCIE, an AI atmospheric emulator, and a side project building an AI player for city-building games — starting with the question of which game, and which interface, makes the problem worth studying.
+
+This site is written in Quarto and hosted on GitHub Pages. Posts are mirrored free on Substack. There is no paywall; if the writing ever earns anything, it will be through voluntary donations.

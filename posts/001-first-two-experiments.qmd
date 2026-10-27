@@ -1,0 +1,163 @@
+---
+title: "From one zone to a working city: Babel's first two experiments"
+date: 2026-10-26
+categories: [babel, experiments]
+---
+
+*This is a draft. Nothing here is published yet.*
+
+## What these experiments test
+
+No model managed a city in this post. Both experiments used fixed commands. That was deliberate. Before we judge any AI decision, the machinery must be trustworthy. A purchase must cost the right amount. A bad purchase must fail safely. Time must advance in a controlled way. A saved city must restore correctly.
+
+Experiment E001 tested one purchase. Experiment E002 tested a small settlement. Together they form one progression. First, trust a single action. Then, trust many actions working together.
+
+## E001: make one purchase trustworthy
+
+A tile is the smallest square of the map. A zone is a marked area where buildings can develop. Buying a residential zone costs $100 in the game.
+
+The test used a clear 32 by 32 map. It used easy difficulty and $20,000 of game money. One affordability case used only $99. Time-test disasters were off. A disaster is a random damaging event. We disabled them so results stayed comparable.
+
+### What a purchase does
+
+A purchase has two stages. First, the tool prepares the site. It stages pending changes and a cost. Second, a funding check runs. It either discards the pending changes or applies them and deducts the money.
+
+This two-stage design protects the city. A failed purchase must leave the real map and cash unchanged. That property is what E001 tested.
+
+### The twelve cases
+
+The final suite had twelve cases. Each case verified one behaviour.
+
+1. Staging leaves real state unchanged. A clear-site purchase then charges $100 and changes exactly nine expected residential tiles.
+2. $99 cannot buy the $100 zone. Map and cash stay unchanged.
+3. An anchor at (0,0) rejects a footprint outside the top and left bounds.
+4. An anchor at (31,31) rejects a footprint outside the bottom and right bounds.
+5. A blocked placement discards partial clearing. A later clear request has no stale fee.
+6. One eligible tree adds $1. Total cost is $101.
+7. A duplicate zone purchase is rejected without another charge.
+8. Saved map and budget fields restore after construction.
+9. One hundred paused time steps do not advance city time.
+10. Nonzero saved flags and loaded map bounds survive, including a dimension change.
+11. 768 internal phases reach time 48 and January 1901 from the start.
+12. Construction, one-year advancement, and load restore all compared simulation fields.
+
+A flag is an on/off property stored in a binary digit of a tile value. For example, one flag marks a zone centre. Another marks whether a tile has power. Restoration checks must compare raw values and flags, not only the displayed tile type. A tile can conduct electricity without having supply. Those are different states.
+
+### Two failures, two repairs
+
+The unchanged game passed 8 of the original 10 cases. Two failures were reproduced and repaired.
+
+First, map loading kept stale flags. The value setter preserved existing flags when the incoming saved value had none. Loading a clean snapshot over constructed tiles could leave old zone flags behind. The repair rebuilds tile objects from ID and flags, and rebuilds map bounds.
+
+Second, census stepping failed. The census code used a budget name that was not defined in that context. The two census calls were corrected to pass the simulation's budget explicitly.
+
+Two checks were added during diagnosis. The repaired suite passed 12 of 12. Do not read this as the original ten tests passing unchanged. The repairs are part of the result.
+
+### Browser checks
+
+We also checked the game in a browser. A disposable city named "Babel E001" was used. A residential placement in the original build charged $101. After rebuilding with repairs, a fresh placement charged $102. Both charges fit one or two $1 clearing fees. The controlled clear-map test independently verified the $100 base cost.
+
+The upstream test suite was also run. 160 of 162 upstream tests passed. Two bounds tests still fail. They expect zero width and height to trigger an assertion. Their source and tests were unchanged. The full upstream suite is not green. We do not claim otherwise.
+
+E001 established a small set of trustworthy operations. It did not establish city growth, good planning, or AI skill.
+
+## E002: operate a small developing settlement
+
+E002 asked a bigger question. Can normal purchases, power, transport, controlled time, and observations work together in a settlement that develops?
+
+Each trial created a fresh clear 64 by 64 map. Settings were easy difficulty, $20,000, 7% tax, automatic budget, full service percentages, slow speed, and disasters off. There were three trials each for three layouts: complete, no-power, and no-roads. Global randomness was unseeded. Results are diagnostic observations, not precise causal estimates.
+
+### The exact layout
+
+| Asset | Position |
+| --- | --- |
+| Coal plant | Anchor (46,12), 4 by 4 tiles |
+| Residential zones | Anchors (12,26), (15,26), (18,26) |
+| Commercial zones | Anchors (24,26), (27,26) |
+| Industrial zones | Anchors (36,26), (39,26), (42,26) |
+| Road | 33 tiles along y = 28, x = 11 to 43 |
+| Horizontal wire | 35 tiles along y = 24, x = 12 to 46 |
+| Vertical wire | 9 tiles along x = 46, y = 15 to 23 |
+
+The road sits below the zones. The wire sits above them. Industry sits east of housing. Coal was the cheaper power source for this connection test. It also adds pollution. The layout was not optimized for city health.
+
+Complete construction cost $4,350. That left $15,650. The no-power layout cost $1,350. The no-roads layout cost $4,020. Wires stayed in all layouts.
+
+Each trial advanced two years: 1,536 internal phases, to January 1902. Each trial recorded 25 observations: initial and monthly. The final nine-trial run recorded 672 purchases and 225 observations.
+
+### What was measured
+
+The driver recorded each command and charge. It recorded direct map population indices for residential, commercial, and industrial zones. An index is an engine number, not a count of people. Displayed population uses different scaling and updates on its own schedule. Do not mix these measures into one series without explaining units and timing.
+
+It also recorded developed-zone counts, zone power, census and evaluation values, demand, cash, pollution scores, traffic density, and annual tax events.
+
+### The first run failed, and growth hid the fault
+
+The first run passed 3 of 9 trials. All complete layouts grew. But every traffic request returned no route. The three complete trials made 38, 47, and 63 requests with zero success.
+
+This is the most important lesson of E002. Visible growth concealed a broken system. A city can look alive while its transport simulation silently fails. Measurement caught what watching would have missed.
+
+### A test-design mistake of our own
+
+The no-power layouts stayed empty and made no traffic requests. The original test still required successful traffic in those layouts. That was an assistant test-design mistake. An empty unpowered city cannot generate traffic.
+
+The requirement was removed for no-power controls in a dated amendment. Complete layouts still had to show routes. Road-free layouts still had to report missing roads. Original files and results remain preserved. The final result includes both an engine repair and a justified changed control requirement. It is not nine unchanged tests passing after only an engine fix.
+
+### The traffic diagnosis: three small faults
+
+A separate fixture placed a residential and a commercial zone beside a five-tile road. Four checks covered numeric drive coordinates, a known route, traffic density, and the no-road control.
+
+| Stage | Passing checks | Fault exposed |
+| --- | ---: | --- |
+| Original traffic code | 1 of 4 | A position object was passed where separate x and y numbers were required, so valid movement could not happen |
+| Initial copy fixed | 1 of 4 | Valid movement then exposed an undefined variable |
+| Movement fixed | 2 of 4 | A route reached its destination, but invalid stacked coordinates prevented density recording |
+| Stack copy fixed | 4 of 4 | Numeric coordinates, route, density, and missing-road checks all pass |
+
+The three corrected expressions were:
+
+```javascript
+var drivePos = new Position(startPos.x, startPos.y);
+drivePos = Position.move(drivePos, dir);
+this._stack.push(new Position(drivePos.x, drivePos.y));
+```
+
+These fixes follow the position interface. They do not redesign route distance, random direction choice, prices, or growth probabilities. Complex traffic behaviour beyond these checks remains untested.
+
+### Final nine-trial observations
+
+All final trials passed the revised checks. Each reached the date, reconciled cash, and applied every purchase at its expected cost. All eight original zones had power in complete and no-road trials. None had power in no-power trials.
+
+| Trial | Final R index | Final C index | Final I index | Developed zones | Successful routes | Ending cash |
+| --- | --- | --- | --- | --- | --- | --- |
+| Complete 1 | 11 | 0 | 5 | 6 | 29 | $15,630 |
+| Complete 2 | 14 | 0 | 7 | 5 | 32 | $15,648 |
+| Complete 3 | 9 | 0 | 3 | 4 | 7 | $15,646 |
+| No power 1 | 0 | 0 | 0 | 0 | 0 | $18,650 |
+| No power 2 | 0 | 0 | 0 | 0 | 0 | $18,650 |
+| No power 3 | 0 | 0 | 0 | 0 | 0 | $18,650 |
+| No roads 1 | 0 | 0 | 0 | 0 | 0 | $15,980 |
+| No roads 2 | 2 | 0 | 0 | 2 | 0 | $15,980 |
+| No roads 3 | 0 | 0 | 0 | 0 | 0 | $15,980 |
+
+Road-free trials returned 6, 4, and 4 missing-road results. Their peak residential index was 2 each. Some transient industrial development also appeared. Missing roads did not prevent every initial growth event.
+
+No commercial development appeared at any monthly observation. Industry satisfied the predefined employment-growth requirement. A route can end beside a commercial zone before that zone develops. Do not claim commercial economic activity was validated.
+
+### Money
+
+After construction, complete cities started with $15,650. Over two years, their combined annual cash changes were -$20, -$2, and -$4. One second-year event was positive. All three had small net operating losses over the full window.
+
+The engine suppresses normal maintenance spending before its population index is established. Some empty-city annual events therefore changed no cash despite a calculated maintenance requirement. That does not mean roads are free.
+
+Controls had different reserves and pollution because they bought different assets. Removing the coal plant changes pollution as well as power. Three unseeded trials cannot separate those effects precisely.
+
+After the traffic fix, E001 still passed 12 of 12. Upstream tests stayed at 160 of 162. The production build passed with the same three warnings. The traffic-repaired bundle was compiled but not separately verified in the browser.
+
+## What E002 proved, and what it did not
+
+E002 proved a functioning, observable engineering loop. Purchases, power, roads, time, and measurements work together. It did not prove balanced city health, commercial growth, profitability, or long-term survival.
+
+Growth alone would have hidden the traffic fault. That is why we test before we judge. The next post finally lets the model choose. It chooses exactly one action. The action is legal. It still fails.
+
+*Technical details for this post are in the [shared appendix](../appendix.qmd). The next post covers E003: the first model-selected command and its failed repair.*

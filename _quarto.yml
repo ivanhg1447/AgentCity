@@ -1,0 +1,28 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Haiwen Guan"
+  description: "Notes on scientific machine learning, climate modeling, and building an AI that plays city-building games."
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - href: appendix.qmd
+        text: Appendix
+  page-footer:
+    left: "© Haiwen Guan"
+    right: "Built with Quarto · Source on GitHub"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    link-external-icon: true
+
+blog:
+  title: "Posts"

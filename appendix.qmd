@@ -1,0 +1,194 @@
+---
+title: "Technical appendix: Babel through E003"
+---
+
+*This appendix supports the E001/E002 and E003 posts. It records implementation, not a request to run it. All posts are drafts and unpublished. The E000 introduction will be written by the owner.*
+
+## Data flow
+
+```text
+Human browser input -> Game.handleTool -> normal tools -> simulation
+
+E001/E002 Node driver -> imported normal tools -> separate simulation
+
+E003 observation -> one OpenAI request -> function-call arguments
+                -> local validation -> normal tool -> same in-memory simulation
+                -> fixed time advancement -> saved observations/full maps
+
+Saved evidence -> Python/Pillow rendering -> FFmpeg MP4
+```
+
+The first API utility is independent of the game. The browser game and Node test instances are independent of each other. The renderer never controls the game. E003 is the point where a model response first selects a game action.
+
+## File roles
+
+| File or directory | Role |
+| --- | --- |
+| `micropolisJS/` | Upstream game checkout, dependencies, and build output |
+| `scripts/api-connection-test.cjs` | One short text API request; writes the latest preparation report |
+| `scripts/Start-ApiConnectionTest.ps1` | Masked local key entry for that test |
+| `scripts/Start-LocalGame.ps1` | Builds the game and serves `dist/` on loopback |
+| `experiments/001-game-connection/runner.js` | Twelve E001 cases |
+| `scripts/run-game-experiment.cjs` | Compiles and runs E001 and captures evidence |
+| `scripts/upstream-tests.config.cjs` | Loads the reviewed upstream Jest config through a CommonJS wrapper |
+| `experiments/002-functional-settlement/runner.js` | Nine fixed settlement trials and ledgers |
+| `experiments/002-functional-settlement/traffic-diagnostic.js` | Four focused traffic checks |
+| `scripts/run-settlement-experiment.cjs` | Selects and bundles either E002 entry |
+| `experiments/002-functional-settlement/reconstruct-construction.js` | Verified replay of the original 86 complete-1 purchases, without stepping a simulation |
+| `scripts/prepare-e002-replay.cjs` / `render-e002-replay.py` | Prepares reconstruction data / renders video |
+| `experiments/003-llm-repair/adapter.js` | Fixture, observation, action validation and execution, phase stepping, full snapshots |
+| `experiments/003-llm-repair/client.cjs` | Request construction, one-request guard, HTTPS, response, usage, and cost recording |
+| `experiments/003-llm-repair/runner.js` | Local preflight or live single-action episode |
+| `scripts/run-llm-repair.cjs` | Build, source and preflight checks, child execution, evidence capture |
+| `scripts/Start-LlmRepair.ps1` | Masked local credential input and live launcher |
+| `scripts/render-e003-replay.py` | Renders the captured full state sequence and returned command |
+| `docs/DECISIONS.md` | Accepted choices, implemented engineering choices, and proposals |
+| `docs/ACTION_LOG.md` | Distinct operations, outcomes, failures, and source checks |
+| `docs/CHALLENGES.md` | Issues, responses, status, and remaining limits |
+
+Timestamped launcher output preserves runner, launcher, and protocol records, plus a game source diff where applicable. The diff captures tracked unstaged changes. It is not a complete workspace backup. E001's first two runs predate automatic source capture. Its final original run includes source snapshots and the patch.
+
+## Build and test commands
+
+Working directory for game installation and build: `C:\Babel\micropolisJS`. The install used a bundled package manager to supply pinned npm. Production build:
+
+```powershell
+node .\node_modules\webpack-cli\bin\cli.js --mode production
+```
+
+Static server, using the bundled Python runtime:
+
+```powershell
+& $babelPython -m http.server 5173 --bind 127.0.0.1 --directory C:\Babel\micropolisJS\dist
+```
+
+From `C:\Babel`, the recorded experiment and test entry points are:
+
+```powershell
+node .\scripts\run-game-experiment.cjs
+node .\scripts\run-settlement-experiment.cjs
+node .\scripts\run-settlement-experiment.cjs --traffic-diagnostic
+node .\micropolisJS\node_modules\jest\bin\jest.js --config .\scripts\upstream-tests.config.cjs --runInBand
+node .\scripts\run-llm-repair.cjs
+```
+
+The final command defaults to local-only E003 preflight. It is not the paid live launcher. The completed live directory refuses another paid attempt. These commands are references. They were not rerun to assemble the writer handoff.
+
+The Node harness uses Webpack with Node target, resolves `.js` and `.ts` imports, uses the game's TypeScript loader and config, and writes a CommonJS bundle under `.cache/babel-build/`. The game's TypeScript config uses ES5 target, CommonJS module compilation, `allowJs`, and strict checks.
+
+E001 and E002 test children have 30-second execution timeouts. E003 has 30 seconds for local preflight and 45 seconds for the live child, with its own 30-second HTTP deadline. Compilation sits outside those child execution timeouts.
+
+## Tool versions
+
+| Tool | Version |
+| --- | --- |
+| Node.js | 24.19.0 |
+| npm used for install | 11.6.2 |
+| pnpm used to supply npm | 11.25.0 |
+| Webpack / webpack-cli | 5.100.1 / 6.0.1 |
+| TypeScript / ts-loader | 5.8.3 / 9.5.2 |
+| Jest / ts-jest | 30.0.4 / 29.4.0 |
+| jQuery | 3.7.1 |
+
+The production build succeeded with three bundle-size and performance warnings. The main bundle was about 439 KiB.
+
+## Exact repairs
+
+Map restoration reconstructs tiles instead of using a setter that can preserve stale flags:
+
+```javascript
+var map = saveData.map;
+this._data = map.map(function(entry) {
+  return new Tile(entry.value & BIT_MASK, entry.value & ALLBITS);
+});
+this.bounds = Bounds.fromOrigin(this.width, this.height);
+```
+
+`BIT_MASK = 0x03FF` extracts the tile ID. `ALLBITS = 0xFC00` extracts six status flags.
+
+The two census calls supply the simulation's budget:
+
+```javascript
+this._census.take10Census(this.budget);
+this._census.take120Census(this.budget);
+```
+
+The traffic corrections:
+
+```javascript
+var drivePos = new Position(startPos.x, startPos.y);
+drivePos = Position.move(drivePos, dir);
+this._stack.push(new Position(drivePos.x, drivePos.y));
+```
+
+No construction cost, growth probability, reward, or route-length rule was tuned to improve a score.
+
+## Recorded hashes
+
+| Object | SHA-256 |
+| --- | --- |
+| Preserved preparation API report | `E85C3D1FF4A31E146A588E105D7B7E9D4AF6294CFAC8E241211B63A21E5B1165` |
+| E001 two-repair browser bundle | `863F6B1948BA2CD51648359D890F48D24B4E13D976CD2C1A139504F40CCD912A` |
+| Later three-file-repair browser bundle | `7C648A19F25769A2FF3833526D074BC4C511EBAEAAA909DE0532EEF96EEAF695` |
+
+The older hash remains evidence for the older build. It will not match the newer bundle after rebuilding traffic. The visible Git build label alone does not identify local modifications.
+
+## E003 request
+
+The request below is copied from the saved live request. It contains no credential header. The `input` field is a JSON-encoded city report. It is included verbatim so readers can inspect the actual task and observation, not a retrospectively improved prompt.
+
+```json
+{
+  "model": "gpt-6-luna",
+  "reasoning": { "effort": "none" },
+  "max_output_tokens": 256,
+  "service_tier": "default",
+  "store": false,
+  "instructions": "You operate a Micropolis city. Restore electrical supply to the existing zones with one legal action costing at most $50 game money. Inspect the supplied map and report. Select the best single action yourself. Return city_action with a brief visible explanation of at most 30 words. Do not request more data. For wait use x=0,y=0. A tool call is a proposal; the controller checks game legality. You cannot run arbitrary code.",
+  "input": "{\"date\":{\"month\":1,\"year\":1900},\"city_time\":4,\"cash\":15655,\"game_action_budget\":50,\"power\":{\"coal_plants\":1,\"original_zones\":8,\"powered_zones\":0,\"zones\":[{\"type\":\"residential\",\"x\":12,\"y\":26,\"powered\":false},{\"type\":\"residential\",\"x\":15,\"y\":26,\"powered\":false},{\"type\":\"residential\",\"x\":18,\"y\":26,\"powered\":false},{\"type\":\"commercial\",\"x\":24,\"y\":26,\"powered\":false},{\"type\":\"commercial\",\"x\":27,\"y\":26,\"powered\":false},{\"type\":\"industrial\",\"x\":36,\"y\":26,\"powered\":false},{\"type\":\"industrial\",\"x\":39,\"y\":26,\"powered\":false},{\"type\":\"industrial\",\"x\":42,\"y\":26,\"powered\":false}]},\"demand\":{\"residential\":360,\"commercial\":-1200,\"industrial\":1200},\"map\":{\"x_columns\":[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],\"rows\":[{\"y\":10,\"tiles\":\"...........................................\"},{\"y\":11,\"tiles\":\".....................................PPPP..\"},{\"y\":12,\"tiles\":\".....................................PPPP..\"},{\"y\":13,\"tiles\":\".....................................PPPP..\"},{\"y\":14,\"tiles\":\".....................................PPPP..\"},{\"y\":15,\"tiles\":\"......................................W....\"},{\"y\":16,\"tiles\":\"......................................W....\"},{\"y\":17,\"tiles\":\"......................................W....\"},{\"y\":18,\"tiles\":\"......................................W....\"},{\"y\":19,\"tiles\":\"...........................................\"},{\"y\":20,\"tiles\":\"......................................W....\"},{\"y\":21,\"tiles\":\"......................................W....\"},{\"y\":22,\"tiles\":\"......................................W....\"},{\"y\":23,\"tiles\":\"......................................W....\"},{\"y\":24,\"tiles\":\"....WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW....\"},{\"y\":25,\"tiles\":\"...RRRRRRRRR...CCCCCC......IIIIIIIII.......\"},{\"y\":26,\"tiles\":\"...RRRRRRRRR...CCCCCC......IIIIIIIII.......\"},{\"y\":27,\"tiles\":\"...RRRRRRRRR...CCCCCC......IIIIIIIII.......\"},{\"y\":28,\"tiles\":\"...=================================.......\"},{\"y\":29,\"tiles\":\"...........................................\"},{\"y\":30,\"tiles\":\"...........................................\"}],\"legend\":{\".\":\"clear ground\",\"P\":\"coal power plant\",\"W\":\"power wire\",\"R\":\"residential zone\",\"C\":\"commercial zone\",\"I\":\"industrial zone\",\"=\":\"road\",\"?\":\"other tile\"},\"rules\":\"Coordinates are tile coordinates. Cardinally adjacent wires and zone tiles conduct power; bare roads and clear ground do not. Power status refreshes during simulation.\"},\"allowed_actions\":{\"wire\":{\"base_cost\":5},\"road\":{\"base_cost\":10},\"wait\":{\"cost\":0}},\"observation_scope\":\"Full labelled local tile map and original-zone power; no secret repair coordinate or reference action supplied\"}",
+  "parallel_tool_calls": false,
+  "tool_choice": { "type": "function", "name": "city_action" },
+  "tools": [
+    {
+      "type": "function",
+      "name": "city_action",
+      "description": "Propose exactly one wire placement, road placement, or wait. The controller executes normal game rules and advances one month.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tool": { "type": "string", "enum": ["wire", "road", "wait"] },
+          "x": { "type": "integer" },
+          "y": { "type": "integer" },
+          "explanation": { "type": "string" }
+        },
+        "required": ["tool", "x", "y", "explanation"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
+```
+
+## Cost basis
+
+Estimated USD = ((input − cached) × 0.10 + cached × 0.01 + output × 0.50) / 1,000,000.
+
+- Preparation: (14 × 0.10 + 9 × 0.50) / 1,000,000 = 0.0000059
+- E003: (956 × 0.10 + 50 × 0.50) / 1,000,000 = 0.0001206
+- Recorded total estimate: 0.0001265
+
+This is a dated basis, checked October 25 and 26, 2026. Do not assume current prices at publication. Model documentation source: GPT-6 Luna model documentation. Function-call design source: OpenAI function-calling guide.
+
+## Media notes
+
+- E002 video: 1280 × 720, 20 fps, H.264, 1,185 frames, 59.25 seconds, silent. Retrospective fixed-script reconstruction. Monthly measurements appear as a chart. Monthly map images were not invented.
+- E003 video: 1280 × 720, 20 fps, H.264, 940 frames, 47 seconds, silent. Actual saved state sequence and returned command. An earlier 55-second draft wrongly included warm-up states after the action. Use the 47-second version.
+- Both videos use upstream MicropolisJS tile artwork. License files were copied with the delivered media. Inspect those licenses before publishing assets.
+- Rendering used Python/Pillow and local FFmpeg 4.0.2 with libx264. No media packages were installed.
+
+## Claims to keep, and claims to avoid
+
+Safe, with qualifications: the model API connection works; Babel places constructions with normal rules and costs on tested tools and sites; the repaired engine develops a scripted settlement in fixed small layouts; traffic works in the tested repaired paths; saved fields restored in E001; the first hosted model game command reached the game; that action was legal and executed correctly but failed to restore power; recorded project API spending was very small.
+
+Do not claim: the LLM built or managed the E001/E002 cities; a balanced, profitable, self-sustaining AI city manager exists; E003 repaired power or succeeded on a later retry; the known scripted repair was the model's choice; all upstream tests pass; a single failed model choice proves a particular prompt, map, or model weakness; a game task validates real-company management; the videos are original live screen recordings.

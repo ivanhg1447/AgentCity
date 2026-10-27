@@ -1,0 +1,134 @@
+---
+title: "A legal move that did not repair the city"
+date: 2026-10-26
+categories: [babel, experiments]
+---
+
+*This is a draft. Nothing here is published yet.*
+
+## The question
+
+Can one model request choose a useful repair? Can Babel execute that exact command? Does power reach all eight existing zones within one simulated month?
+
+This was the first time the model selected a game action. Everything before this used fixed commands. That distinction matters. E001 and E002 tested machinery. E003 tests a decision.
+
+## The fixture
+
+The adapter rebuilt the complete layout from E002, but omitted one wire at (46,19). Construction cost $4,345, leaving $15,655. The city then advanced one month, so power scans established the fault. The observation date was February 1900. All eight original zones were unpowered. A coal plant existed.
+
+Before spending anything on the model, six local checks passed:
+
+| Check | Result |
+| --- | --- |
+| Known fault and reference repair | One $5 wire at (46,19) restores all eight zones after another month |
+| Wait control | Zones stay unpowered; no charge |
+| Invalid coordinate | Rejected without changing map or cash |
+| Insufficient funds | Rejected without changing map or cash |
+| Occupied plant site | The normal wire tool rejects the site without charging |
+| Second command in one episode | Rejected without further change |
+
+The reference repair ran in a separate local fixture. It was not applied to the model's live city after failure. That separation matters. The live city kept its failure intact for honest reporting.
+
+The live episode created a fresh fixture and kept it in memory while waiting for the response. It did not save and reload an old simulation across the network request.
+
+## What the model saw, and what it could do
+
+The model received cash, date, demand, the plant count, zone coordinates and power states, and a text map. The map covered x = 8 to 50 and y = 10 to 30. It had an explicit list of x-columns and y-labelled row strings. Symbols were `.` for clear ground, `P` for plant, `W` for wire, `R`, `C`, `I` for zones, and `=` for road.
+
+It also received tool prices, conduction rules, a $50 in-game action allowance, and the goal to restore supply with one legal action. It could choose `wire`, `road`, or `wait`. Waiting used (0,0) as unused coordinates.
+
+The known missing-wire coordinate was not supplied as the answer. The gap is visible in the map data. The replay's red and gold outlines were added later for human explanation. The model saw text, not those annotated pictures.
+
+Be clear about the assistance here. This was a known power problem, a small map, a restricted action set, and no need to explore. It is not unrestricted management. It still required selecting an effective coordinate.
+
+## The exact returned command
+
+```json
+{
+  "tool": "wire",
+  "x": 44,
+  "y": 15,
+  "explanation": "Extend the plant's existing wire toward the industrial zones; this is the first link in restoring power."
+}
+```
+
+This is the model's returned command and short visible explanation. It is not a private internal reasoning trace. We have no access to such a trace, and we do not claim to know the model's internal reasoning.
+
+The controller validated the fields, types, coordinate window, affordability, and staged cost. It used the normal wire tool for site checks and application. It accepted the action, changed exactly (44,15) from clear ground to wire, and charged $5. Cash fell from $15,655 to $15,650.
+
+The existing vertical wire is at x = 46. The chosen tile at (44,15) is two tiles west of that line. It has no cardinal connection to it or to the plant. Cardinal means sharing an edge: up, down, left, or right. Diagonal contact does not conduct power. The chosen tile does not close the gap at (46,19).
+
+After another month, all eight zones remained unpowered. The endpoint was March 1900. The model explanation described a first step, even though the task required a complete repair in one action.
+
+| Result layer | Outcome |
+| --- | --- |
+| API returns a completed response with one function call | Pass |
+| Requested command is legal and executed exactly, with correct charge | Pass |
+| All eight original zones have power within the follow-up window | **Fail: 0 of 8** |
+
+The live process exited with code 1 because the repair criterion failed. This is a completed failed experiment, not an unfinished connection. No second request, hidden repair, changed success criterion, or replacement command was used.
+
+## Request controls
+
+| Setting | Value |
+| --- | --- |
+| Requested and returned model | `gpt-6-luna` |
+| Endpoint | `POST https://api.openai.com/v1/responses` |
+| Reasoning effort | `none` |
+| Maximum output | 256 tokens |
+| Service tier | `default` |
+| Storage option | `store: false` |
+| Function | `city_action`, forced, strict schema |
+| Parallel calls | Disabled |
+| HTTP attempts and automatic retries | 1 and 0 |
+| Network deadline | 30 seconds |
+
+No seed or temperature override was specified. Do not infer reproducible model decisions from the model name alone. The same request might return a different action another time.
+
+The client created a request-start marker with exclusive file mode before sending. The launcher refuses a directory with that marker. A timeout can leave the provider outcome unknown, so a request is not repeated automatically. These controls bound the episode to one paid request. They are not a recurring monthly spending limit.
+
+No key was configured in process, user, or machine environment during preflight. The key was entered in a masked local window. It passed through memory and was not recorded in the prompt, arguments, source, or evidence.
+
+## Cost of the two recorded requests
+
+Game money and real money are different. The $5 wire is an in-game purchase. The hosted inference charge is real money, estimated from recorded usage and a dated price basis.
+
+| Request | Input tokens | Output tokens | Estimated USD |
+| --- | ---: | ---: | ---: |
+| Preparation connection test | 14 | 9 | 0.0000059 |
+| E003 live action | 956 | 50 | 0.0001206 |
+| **Recorded total** | **970** | **59** | **0.0001265** |
+
+The price basis was $0.10 per million uncached input tokens and $0.50 per million output tokens, checked October 25 and 26. This is an estimate from usage, not an invoice or verified account balance. Do not subtract it from the $10 credit and present the result as an audited remaining balance.
+
+## What this result does and does not show
+
+The result establishes a model-to-game command connection. Format, legality, exact execution, and task success were checked separately. The first three passed. The last failed. That separation is the point of the experiment design.
+
+The result does not establish reliable decision quality. The cause of the poor choice is unresolved. Character-map indexing, task wording, spatial inference, and interpreting the one-action objective are all hypotheses. One attempt cannot show which mattered. It cannot show whether a different model would succeed, or whether more reasoning would help.
+
+The proposed next step is to test an explicit wire-coordinate or connected-segment observation format. No E004, revised-prompt comparison, second paid repair, or expanded action budget has been run or accepted as a complete protocol.
+
+## Watching the process
+
+The user asked to watch the playing process. That request exposed a gap. E002 had complete action records and monthly measurements, but no live video or full intermediate maps. Its 59-second video is a retrospective reconstruction, not recovered footage. It reissued the first trial's 86 purchases through the real game tools and matched every cost. Monthly measurements appear as a chart. Monthly map images were not invented.
+
+E003 improved capture. Twelve full state records cover construction, warm-up, the model observation, the action result, follow-up, and endpoint. Its 47-second video uses those actual states and the returned command. It runs no new trajectory and makes no model call. Playback pacing is editorial. An earlier 55-second draft wrongly included warm-up states after the action. It was preserved and corrected. Use the 47-second version.
+
+Both videos use upstream MicropolisJS tile artwork. License files were copied with the delivered media. Check those licenses before publishing any assets.
+
+## What remains open
+
+Several questions stay open, and the blog should not pretend otherwise.
+
+- What do "flourish" and city health mean in numbers? No target population, reserve, pollution limit, or sustained-profit requirement is accepted yet.
+- What should the model see? Individual placements, candidate actions, road and zone batches, or district-level commands are all still undecided.
+- Would a clearer state representation improve repair selection? That needs repeat counts and comparison rules fixed before claiming an effect.
+- What spending controls should future work use? E003's single authorized request is complete.
+- How do we build a general reference player and a fair comparison? Neither exists yet.
+- Can we validate commercial growth, broader transport, long-term finance, and larger scenarios? Not yet.
+- What about a local model or cluster? No such model or hardware has been installed. That choice needs a concrete need and measurement first.
+
+The honest summary of Babel so far is short. The machinery works. The settlement develops under fixed commands. The first model decision was legal, exact, and wrong. That is progress, because now we can measure the next attempt against it.
+
+*Technical details for this post are in the [shared appendix](../appendix.qmd).*
