@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "I am Haiwen Guan, a computational scientist and postdoctoral researcher at Argonne National Laboratory. My work sits at the intersection of AI and scientific computing: neural operators, generative and diffusion models, and AI emulators for weather and climate.\nCurrent projects include LUCIE, an AI atmospheric emulator, and a side project building an AI player for city-building games — starting with the question of which game, and which interface, makes the problem worth studying.\nThis site is written in Quarto and hosted on GitHub Pages. Posts are mirrored free on Substack. There is no paywall; if the writing ever earns anything, it will be through voluntary donations."
+    "text": "This site documents a project to build an AI player for city-building and business simulation games, in public, failures included. It also carries research notes: methods, papers, and things worth writing down.\nThis site is written in Quarto and hosted on GitHub Pages. Posts are mirrored free on Substack. There is no paywall; if the writing ever earns anything, it will be through voluntary donations."
   },
   {
     "objectID": "posts/001-first-two-experiments.html",
@@ -44,9 +44,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Haiwen Guan",
+    "title": "AgentCity",
     "section": "",
-    "text": "I am a postdoctoral researcher at Argonne National Laboratory working on scientific machine learning — neural operators, diffusion models, and climate and atmospheric modeling.\nThis blog has two threads. One is a build log for an AI that plays city-building and business simulation games, documented in public, failures included. The other is research notes from the lab: methods, papers, and things I wish someone had written down.\nNew posts appear when there is something worth saying, roughly once a week.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nA legal move that did not repair the city\n\n\n\nbabel\n\nexperiments\n\n\n\n\n\n\n\n\n\nOct 26, 2026\n\n\n\n\n\n\n\n\n\n\n\n\nFrom one zone to a working city: Babel’s first two experiments\n\n\n\nbabel\n\nexperiments\n\n\n\n\n\n\n\n\n\nOct 26, 2026\n\n\n\n\n\nNo matching items"
+    "text": "This blog has two threads. One is a build log for an AI that plays city-building and business simulation games, documented in public, failures included. The other is research notes: methods, papers, and things worth writing down.\nNew posts appear when there is something worth saying, roughly once a week.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nA legal move that did not repair the city\n\n\n\nbabel\n\nexperiments\n\n\n\n\n\n\n\n\n\nOct 26, 2026\n\n\n\n\n\n\n\n\n\n\n\n\nFrom one zone to a working city: Babel’s first two experiments\n\n\n\nbabel\n\nexperiments\n\n\n\n\n\n\n\n\n\nOct 26, 2026\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/002-first-model-action.html",
