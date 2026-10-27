@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Technical appendix: Babel through E003 – AgentCity</title>
+<title>Technical appendix: experiments through E003 – AgentCity</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -175,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Technical appendix: Babel through E003</h1>
+<h1 class="title">Technical appendix: experiments through E003</h1>
 </div>
 
 
@@ -310,18 +310,18 @@ Saved evidence -&gt; Python/Pillow rendering -&gt; FFmpeg MP4</code></pre>
 </section>
 <section id="build-and-test-commands" class="level2">
 <h2 class="anchored" data-anchor-id="build-and-test-commands">Build and test commands</h2>
-<p>Working directory for game installation and build: <code>C:\Babel\micropolisJS</code>. The install used a bundled package manager to supply pinned npm. Production build:</p>
+<p>Working directory for game installation and build: the local <code>micropolisJS</code> checkout. The install used a bundled package manager to supply pinned npm. Production build:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\node_modules\webpack-cli\bin\<span class="fu">cli</span><span class="op">.</span><span class="fu">js</span> <span class="op">--</span>mode production</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Static server, using the bundled Python runtime:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&amp;</span> <span class="va">$babelPython</span> <span class="op">-</span>m http<span class="op">.</span><span class="fu">server</span> <span class="dv">5173</span> <span class="op">--</span>bind <span class="dv">127.0</span><span class="op">.</span><span class="dv">0.1</span> <span class="op">--</span>directory C<span class="op">:</span>\Babel\micropolisJS\dist</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>From <code>C:\Babel</code>, the recorded experiment and test entry points are:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&amp;</span> <span class="va">$pythonExe</span> <span class="op">-</span>m http<span class="op">.</span><span class="fu">server</span> <span class="dv">5173</span> <span class="op">--</span>bind <span class="dv">127.0</span><span class="op">.</span><span class="dv">0.1</span> <span class="op">--</span>directory <span class="op">&lt;</span>path to the micropolisJS dist folder<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>From the project root, the recorded experiment and test entry points are:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\scripts\run-game-experiment<span class="op">.</span><span class="fu">cjs</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\scripts\run-settlement-experiment<span class="op">.</span><span class="fu">cjs</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\scripts\run-settlement-experiment<span class="op">.</span><span class="fu">cjs</span> <span class="op">--</span>traffic-diagnostic</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\micropolisJS\node_modules\jest\bin\jest<span class="op">.</span><span class="fu">js</span> <span class="op">--</span>config <span class="op">.</span>\scripts\upstream-tests<span class="op">.</span><span class="fu">config</span><span class="op">.</span><span class="fu">cjs</span> <span class="op">--</span>runInBand</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>node <span class="op">.</span>\scripts\run-llm-repair<span class="op">.</span><span class="fu">cjs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The final command defaults to local-only E003 preflight. It is not the paid live launcher. The completed live directory refuses another paid attempt. These commands are references. They were not rerun to assemble the writer handoff.</p>
-<p>The Node harness uses Webpack with Node target, resolves <code>.js</code> and <code>.ts</code> imports, uses the game’s TypeScript loader and config, and writes a CommonJS bundle under <code>.cache/babel-build/</code>. The game’s TypeScript config uses ES5 target, CommonJS module compilation, <code>allowJs</code>, and strict checks.</p>
+<p>The Node harness uses Webpack with Node target, resolves <code>.js</code> and <code>.ts</code> imports, uses the game’s TypeScript loader and config, and writes a CommonJS bundle under a local <code>.cache</code> build directory. The game’s TypeScript config uses ES5 target, CommonJS module compilation, <code>allowJs</code>, and strict checks.</p>
 <p>E001 and E002 test children have 30-second execution timeouts. E003 has 30 seconds for local preflight and 45 seconds for the live child, with its own 30-second HTTP deadline. Compilation sits outside those child execution timeouts.</p>
 </section>
 <section id="tool-versions" class="level2">
@@ -469,7 +469,7 @@ Saved evidence -&gt; Python/Pillow rendering -&gt; FFmpeg MP4</code></pre>
 </section>
 <section id="claims-to-keep-and-claims-to-avoid" class="level2">
 <h2 class="anchored" data-anchor-id="claims-to-keep-and-claims-to-avoid">Claims to keep, and claims to avoid</h2>
-<p>Safe, with qualifications: the model API connection works; Babel places constructions with normal rules and costs on tested tools and sites; the repaired engine develops a scripted settlement in fixed small layouts; traffic works in the tested repaired paths; saved fields restored in E001; the first hosted model game command reached the game; that action was legal and executed correctly but failed to restore power; recorded project API spending was very small.</p>
+<p>Safe, with qualifications: the model API connection works; the test setup places constructions with normal rules and costs on tested tools and sites; the repaired engine develops a scripted settlement in fixed small layouts; traffic works in the tested repaired paths; saved fields restored in E001; the first hosted model game command reached the game; that action was legal and executed correctly but failed to restore power; recorded project API spending was very small.</p>
 <p>Do not claim: the LLM built or managed the E001/E002 cities; a balanced, profitable, self-sustaining AI city manager exists; E003 repaired power or succeeded on a later retry; the known scripted repair was the model’s choice; all upstream tests pass; a single failed model choice proves a particular prompt, map, or model weakness; a game task validates real-company management; the videos are original live screen recordings.</p>
 
 
