@@ -4,7 +4,6 @@ listing:
   contents: posts
   sort: "date desc"
   type: default
-  categories: true
 ---
 
 This blog has two threads. One is a build log for an AI that plays city-building and business simulation games, documented in public, failures included. The other is research notes: methods, papers, and things worth writing down.

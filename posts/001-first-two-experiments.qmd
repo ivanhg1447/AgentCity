@@ -1,7 +1,6 @@
 ---
 title: "From one zone to a working city: the first two experiments"
 date: 2026-10-26
-categories: [experiments]
 ---
 
 ## What these experiments test

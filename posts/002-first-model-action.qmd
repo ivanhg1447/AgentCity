@@ -1,7 +1,6 @@
 ---
 title: "A legal move that did not repair the city"
 date: 2026-10-26
-categories: [experiments]
 ---
 
 ## The question
